@@ -9,7 +9,7 @@
 
 void WindowClass::Draw(std::string_view label)
 {
-  constexpr static auto window_flags =
+    constexpr static auto window_flags =
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
 
@@ -24,38 +24,46 @@ void WindowClass::Draw(std::string_view label)
     ImGui::SameLine();
     ImGui::InputText("##URL", url, IM_ARRAYSIZE(url));
     ImGui::SameLine();
-    if (ImGui::Button("Go")){
+    if (ImGui::Button("Go"))
+    {
         Navigate(url);
     }
     ImGui::SameLine();
-    if(    ImGui::ArrowButton("##Back", ImGuiDir_Left)){
+    if (ImGui::ArrowButton("##Back", ImGuiDir_Left))
+    {
         GoBack();
     }
 
     ImGui::SameLine();
-    if(    ImGui::ArrowButton("##Forward", ImGuiDir_Right)){
+    if (ImGui::ArrowButton("##Forward", ImGuiDir_Right))
+    {
         GoForward();
     }
 
     ImGui::SameLine();
-    if (ImGui::Button("Refresh")){
+    if (ImGui::Button("Refresh"))
+    {
         Refresh();
     }
     ImGui::Separator();
 
     //add browser content
-    ImGui::BeginChild("Content", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()),true);
+    ImGui::BeginChild("Content",
+                      ImVec2(0, -ImGui::GetFrameHeightWithSpacing()),
+                      true);
     ImGui::Text("Current URL: %s", current_url.c_str());
     ImGui::EndChild();
 
     ImGui::End();
 }
 
-void WindowClass::Navigate(const std::string& url)
+void WindowClass::Navigate(const std::string &url)
 {
-    if(ValidateUrl(url)){
+    if (ValidateUrl(url))
+    {
 
-        if(history_index < history.size() -1){
+        if (history_index < history.size() - 1)
+        {
             history.erase(history.begin() + history_index + 1, history.end());
         }
         current_url = url;
@@ -63,15 +71,12 @@ void WindowClass::Navigate(const std::string& url)
         history_index = history.size() - 1;
 
         std::cout << "Navigating to: " << url << std::endl;
-
-
-        }
-        else
-        {
-            std::cerr << "Invalid URL: " << url << std::endl;
-        }
-
     }
+    else
+    {
+        std::cerr << "Invalid URL: " << url << std::endl;
+    }
+}
 
 void WindowClass::GoBack()
 {
@@ -98,12 +103,14 @@ void WindowClass::Refresh()
     std::cout << "Refreshing current page: " << current_url << std::endl;
 }
 
-bool WindowClass::ValidateUrl(const std::string& url)
+bool WindowClass::ValidateUrl(const std::string &url)
 {
     // This is a basic URL validation, you might want to improve it
-    std::regex url_regex(R"(^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$)");
+    std::regex url_regex(
+        R"(^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$)");
     return std::regex_match(url, url_regex);
 }
+
 
 void render(WindowClass &window_obj)
 {
